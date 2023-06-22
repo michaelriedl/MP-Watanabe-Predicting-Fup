@@ -33,13 +33,15 @@ The results will need to be reproduced sequentially as the Morded descriptors an
 <div align="center">
 <figure>
 <img src="./results/train_log_d1_rf/watanabe_parity.png" alt="Watanabe Full" style="width:30%">
-<figcaption>Parity plot of RF results from run/train_log_d1_rf.py</figcaption>
+<br>
+<figcaption>Parity plot of log-D1-RF results from run/train_log_d1_rf.py</figcaption>
 </figure>
 </div>
-
+<br>
 <div align="center">
 <figure>
 <img src="./results/train_log_d1_rf/watanabe_parity_low.png" alt="Watanabe Full" style="width:30%">
-<figcaption>Parity plot of RF results in the low value region from run/train_log_d1_rf.py</figcaption>
+<br>
+<figcaption>Parity plot of log-D1-RF results in the low value region from run/train_log_d1_rf.py</figcaption>
 </figure>
 </div>
