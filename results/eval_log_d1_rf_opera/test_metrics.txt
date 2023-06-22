@@ -1,0 +1,10 @@
+Full dataset:
+R^2: 0.415
+RMSE: 0.614
+MAE: 0.456
+
+Lower range:
+R^2: -1.650
+RMSE: 0.805
+MAE: 0.636
+
