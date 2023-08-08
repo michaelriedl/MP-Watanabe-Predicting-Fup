@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from rdkit import Chem
+from rdkit.Chem.SaltRemover import SaltRemover
 from mordred import Calculator, descriptors
 from padelpy import padeldescriptor
 from sklearn.metrics import r2_score
@@ -20,6 +21,38 @@ FINGERPRINT_MAP = {
     "CDKextended": "../data/fingerprint_templates/ExtendedFingerprinter.xml",
     "KlekotaRoth": "../data/fingerprint_templates/KlekotaRothFingerprinter.xml",
 }
+
+
+def format_smiles(smiles, desalt=True, canonical=True):
+    """
+    Formats a SMILES string to match Watanabe canonical SMILES.
+
+    Parameters
+    ----------
+    smiles : str
+        A SMILES string to convert to canonical form.
+    desalt : bool, optional
+        Flag for removing salts and solvents from SMILES string, by default True.
+    canonical : bool, optional
+        Flag enabling the conversion of the SMILES to canonical form, by default True.
+
+    Returns
+    -------
+    smiles : str
+        The correctly formatted SMILES string.
+
+    """
+    # Initialize the salt/solvent remover
+    remover = SaltRemover()
+    # Convert the SMILES to molecule
+    mol = Chem.MolFromSmiles(smiles)
+    # Remove the salts/solvents
+    if desalt:
+        mol = remover.StripMol(mol, dontRemoveEverything=True)
+    # Convert back to SMILES
+    smiles = Chem.MolToSmiles(mol, canonical=canonical)
+
+    return smiles
 
 
 def main():
@@ -55,9 +88,14 @@ def main():
     desc_down_watanabe_df = pd.read_csv(watanabe_desc_down_file_name)
     fup_opera_df = pd.read_csv(fup_opera_file_name)
 
+    # Convert the SMILES strings
+    fup_opera_smiles_list = [
+        format_smiles(x) for x in fup_opera_df["Original_SMILES"].to_list()
+    ]
+
     # Create the temporary SMILES file
     temp_df = pd.DataFrame(columns=["SMILES", "No."])
-    temp_df["SMILES"] = fup_opera_df["Canonical_QSARr"].to_list()
+    temp_df["SMILES"] = fup_opera_smiles_list
     temp_df["No."] = fup_opera_df["No."].to_list()
     temp_df.to_csv(temp_smi_file_name, sep="\t", index=False, header=False)
 
@@ -66,7 +104,7 @@ def main():
         # Create the calculator
         desc_calc = Calculator(descriptors, ignore_3D=True, version="1.0.0")
         # Convert the SMILES to molecules
-        mols_list = [Chem.MolFromSmiles(smi) for smi in fup_opera_df["Canonical_QSARr"]]
+        mols_list = [Chem.MolFromSmiles(smi) for smi in fup_opera_smiles_list]
         # Calculate the descriptors
         desc_opera_df = desc_calc.pandas(mols_list)
         # Add in the number index for matching
@@ -111,10 +149,10 @@ def main():
     # Drop rows that have invalid descriptors
     keep_list = []
     for _, row in desc_down_opera_df.iterrows():
-        if not row.str.contains("invalid").any():
-            keep_list.append(True)
-        else:
+        if row.str.contains("invalid").any() or row.str.contains("missing").any():
             keep_list.append(False)
+        else:
+            keep_list.append(True)
     desc_down_opera_df = desc_down_opera_df[keep_list]
     fup_opera_df = fup_opera_df[keep_list]
     fup_opera_df.to_csv(fup_opera_valid_file_name, index=False)
