@@ -1,6 +1,18 @@
 # MP-Watanabe-Predicting-Fup
 Reproducing results from  <a href="https://pubs.acs.org/doi/10.1021/acs.molpharmaceut.8b00785" target="_blank">Watanabe, Reiko, et al.</a> "Predicting fraction unbound in human plasma from chemical structure: improved accuracy in the low value ranges." Molecular pharmaceutics 15.11 (2018): 5302-5311.
 
+This model and results are used as a baseline comparison in <a href="https://pubs.acs.org/doi/abs/10.1021/acs.molpharmaceut.3c00129" target="_blank">Riedl, et al.</a> "Descriptor-Free Deep Learning QSAR Model for the Fraction Unbound in Human Plasma." Molecular pharmaceutics 2023.
+
+```
+@article{riedl2023descriptor,
+  title={Descriptor-Free Deep Learning QSAR Model for the Fraction Unbound in Human Plasma},
+  author={Riedl, Michael and Mukherjee, Sayak and Gauthier, Mitch},
+  journal={Molecular Pharmaceutics},
+  year={2023},
+  publisher={ACS Publications}
+}
+```
+
 ## Setup
 We provide a script for automatically building the required conda environment. However, the steps in the script can also be run manually as shown below. You must also install JRE 6+ in order to use padelpy. We provide the precalculated descriptors and fingerprints so users do not need to repeat that computationally intensive step or cannot do so due to operating system constraints.
 
